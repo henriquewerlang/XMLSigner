@@ -209,7 +209,10 @@ uses System.NetEncoding;
 
 function CryptXmlGetSignature(hCryptXml: Pointer; out ppStruct: PCRYPT_XML_SIGNATURE): HRESULT; stdcall; external 'CRYPTXML.dll' name 'CryptXmlGetSignature';
 
-function WriteXML(Callback: Pointer; Data: PByte; Size: Cardinal): HRESULT; stdcall;
+type
+  CallbackPointer = {$IF CompilerVersion < 37.0}PPointer{$ELSE}Pointer{$IFEND};
+
+function WriteXML(Callback: CallbackPointer; Data: PByte; Size: Cardinal): HRESULT; stdcall;
 begin
   PString(Callback^)^ := PString(Callback^)^ + TEncoding.UTF8.GetString(TBytes(Data), 0, Size);
   Result := S_OK;
